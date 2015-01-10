@@ -1,0 +1,21 @@
+{
+  "name": "node-sockjs-server",
+  "version": "0.0.0",
+  "description": "My test sockjs server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "sockjs",
+    "websockets",
+    "test",
+    "integration"
+  ],
+  "author": "tomjankes <jankowski.tomek@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "sockjs": "^0.3.12"
+  }
+}
