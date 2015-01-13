@@ -1,19 +1,19 @@
-var http   = require('http'),
+var http = require('http'),
     sockjs = require('sockjs'),
-	fs     = require('fs');
+    fs = require('fs');
 
 var echoServer = sockjs.createServer({
     sockjs_url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
 });
 
-echoServer.on('connection', function(conn) {
+echoServer.on('connection', function (conn) {
     console.log('SOCK new connection ' + conn);
-    conn.on('close', function() {
+    conn.on('close', function () {
         console.log('SOCK closed connection ' + conn);
     });
-    conn.on('data', function(message) {
+    conn.on('data', function (message) {
         console.log('SOCK message received ' + conn, message);
-		conn.write('Thank you for ' + message);
+        conn.write('Thank you for ' + message);
     });
 });
 
