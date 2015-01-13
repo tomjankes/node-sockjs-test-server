@@ -7,18 +7,18 @@ var echoServer = sockjs.createServer({
 });
 
 echoServer.on('connection', function(conn) {
-    console.log('new connection ' + conn);
+    console.log('SOCK new connection ' + conn);
     conn.on('close', function() {
-        console.log('closed connection ' + conn);
+        console.log('SOCK closed connection ' + conn);
     });
     conn.on('data', function(message) {
-        console.log('message' + conn, message);
+        console.log('SOCK message received ' + conn, message);
 		conn.write('Thank you for ' + message);
     });
 });
 
 var indexHandler = function (req, res) {
-    console.log(req.method + " " + req.path);
+    console.log(req.method + " " + req.url);
     fs.readFile('index.html', 'utf8', function (err, data) {
         if (err) {
             console.log(err);
@@ -26,7 +26,6 @@ var indexHandler = function (req, res) {
             res.write('Internal server error');
             res.end();
         }
-        console.log('Serving index.html');
         res.writeHead(200);
         res.write(data);
         res.end();
