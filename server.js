@@ -25,10 +25,11 @@ var indexHandler = function (req, res) {
             res.writeHead(500);
             res.write('Internal server error');
             res.end();
+        } else {
+            res.writeHead(200);
+            res.write(data);
+            res.end();
         }
-        res.writeHead(200);
-        res.write(data);
-        res.end();
     });
 };
 
