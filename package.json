@@ -16,6 +16,7 @@
   "author": "tomjankes <jankowski.tomek@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "node-simple-router": "^0.9.4-2",
     "sockjs": "^0.3.12"
   }
 }
