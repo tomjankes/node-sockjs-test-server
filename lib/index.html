@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SockJs client</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf8"/>
+</head>
+<body>
+    <button value="Connect" onclick="openConnection();">Connect</button>
+    <button value="Close connection" onclick="closeConnection();">Close connection</button>
+    <button value="Send message" onclick="sendMessage();">Send message</button>
+    <input id="message-to-send" type="text" placeholder="Enter message"/>
+    <button value="Clear log" onclick="clearLog();">Clear log</button>
+    <pre id="main"></pre>
+    <script src="http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script type="text/javascript">
+    var sock;
+
+    function mylog(message) {
+        var pre = document.getElementById('main');
+        pre.innerHTML = pre.innerHTML + "[" + new Date() + "] " + escapeHtml(message) + "\n";
+    }
+
+    function closeConnection() {
+        if (isOpen()) {
+            sock.close();
+            mylog('Closed connection');
+        } else {
+            mylog('Connection already closed');
+        }
+    }
+
+    function isOpen() {
+        if (sock) {
+            return sock.readyState === 1;
+        }
+        return false;
+    }
+
+    function sendMessage() {
+        if (isOpen()) {
+            var messageText = document.getElementById('message-to-send').value;
+            if (!messageText) {
+                mylog('Please enter message');
+                return;
+            }
+            mylog('Sent message ' + messageText);
+            sock.send(messageText);
+        } else {
+            mylog('Cannot send: connection is not opened');
+        }
+    }
+
+    function openConnection() {
+        if (isOpen()) {
+            mylog('Connection already opened');
+            return;
+        }
+        sock = new SockJS('http://localhost:9999/sockjs');
+        sock.onopen = function () {
+            mylog('Connection opened');
+        };
+        sock.onmessage = function (e) {
+            mylog('Message recieved: ' + e.data);
+        };
+        sock.onclose = function () {
+            mylog('Connection closed');
+        };
+    }
+
+    function clearLog() {
+        var pre = document.getElementById('main');
+        pre.innerHTML = '';
+    }
+
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function (m) {
+            return map[m];
+        });
+    }
+    </script>
+    </body>
+</html>

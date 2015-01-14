@@ -4,7 +4,8 @@
   "description": "My test sockjs server",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node server.js"
   },
   "keywords": [
     "node",
@@ -13,10 +14,14 @@
     "test",
     "integration"
   ],
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/tomjankes/node-sockjs-test-server"
+  },
   "author": "tomjankes <jankowski.tomek@gmail.com>",
   "license": "ISC",
-  "devDependencies": {
-    "node-simple-router": "^0.9.4-2",
+  "dependencies": {
+    "route-parser": "0.0.2",
     "sockjs": "^0.3.12"
   }
 }
