@@ -9,6 +9,7 @@ var sockJsServer = sockjs.createServer({
 
 var storedMessages = [];
 var connectionsMap = {};
+var registeredVertxListeners = {};
 
 sockJsServer.on('connection', function (conn) {
     connectionsMap[conn.id] = conn;
@@ -20,7 +21,26 @@ sockJsServer.on('connection', function (conn) {
     conn.on('data', function (message) {
         console.log('SOCK message received ' + conn, message);
         storedMessages.push(message);
-        conn.write('Thank you for ' + message);
+        var jsonMsg = JSON.parse(message);
+        if (jsonMsg.type) {
+            switch(jsonMsg.type) {
+                case "ping":
+                    conn.write('{"type": "ping"}');
+                    break;
+                case "register":
+                    if (registeredVertxListeners[jsonMsg.address] instanceof Array) {
+                        registeredVertxListeners[jsonMsg.address].push(conn.id);
+                    } else {
+                        registeredVertxListeners[jsonMsg.address] = [conn.id];
+                    }
+                    conn.write('{"message": "ok"}');
+                    break;
+                default:
+                    conn.write('{"message": "did not understand"}');
+            }
+        } else {
+            conn.write('Thank you for ' + message);
+        }
     });
 });
 
@@ -90,6 +110,32 @@ httpServer.post('/new_messages/:connId', function (req, res) {
     }
     res.writeHead(404, {'Content-Type': 'application/json'});
     res.end(JSON.stringify({message: "Connection " + req.params.connId + " not found"}));
+});
+
+httpServer.post('/new_vertxbus_messages', function (req, res) {
+    var topic = req.body.topic;
+    if (topic) {
+        var listeners = registeredVertxListeners[topic];
+        if (listeners instanceof Array) {
+            for (var i = 0; i < listeners.length; i++) {
+                var listener = listeners[i],
+                    conn = connectionsMap[listener];
+                if (conn) {
+                    conn.write(JSON.stringify({address: req.body.topic, body: req.body.body}));
+                    res.writeHead(201);
+                    res.end();
+                    return;
+                }
+            }
+        }
+    }
+    res.writeHead(404);
+    res.end();
+});
+
+httpServer.get('/registered_vertx_handlers', function (req, res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(registeredVertxListeners));
 });
 
 var server = http.createServer(httpServer);
