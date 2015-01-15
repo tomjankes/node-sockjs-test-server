@@ -4,8 +4,9 @@
   "description": "My test sockjs server",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node server.js"
+    "test": "./node_modules/.bin/mocha test/",
+    "run": "node server.js",
+    "lint": "./node_modules/.bin/jshint **.js"
   },
   "keywords": [
     "node",
@@ -15,13 +16,18 @@
     "integration"
   ],
   "repository": {
-      "type": "git",
-      "url": "https://github.com/tomjankes/node-sockjs-test-server"
+    "type": "git",
+    "url": "https://github.com/tomjankes/node-sockjs-test-server"
   },
   "author": "tomjankes <jankowski.tomek@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "route-parser": "0.0.2",
     "sockjs": "^0.3.12"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "jshint": "^2.5.11",
+    "mocha": "^2.1.0"
   }
 }
